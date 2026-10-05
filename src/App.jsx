@@ -1,120 +1,60 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useState,useEffect } from 'react'
+import ImageResult from './components/ImageResult.jsx'
 import './App.css'
+import * as ort from 'onnxruntime-web';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [imgState, setImageState] = useState(null)
+  const [session, setSession] = useState(null);
+  const [isModelLoading, setIsModelLoading] = useState(true);
 
+  useEffect( () => {
+    const loadModel = async() => {
+      try{
+        const modelSession = await ort.InferenceSession.create("/model/glassify_V2.onnx");
+        //executionProviders: ['webgl', 'wasm'] -> for GPU
+        setSession(modelSession);
+        setIsModelLoading(false);
+        console.log("Model Loaded Successfully");
+      }catch(error){
+        console.log("Failed Loading Model");
+      }
+       
+    };
+    loadModel();
+  }
+  ,[]);
+
+  const handleImageChange = (event) => {
+  const uploaded_img = event.target.files[0]
+  if(uploaded_img){
+    const img_url = URL.createObjectURL(uploaded_img);
+    setImageState(img_url)
+  }
+  
+}
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  }
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+    {isModelLoading? (
+      <h1>Loading</h1>
+    ):(
+      <>
+      <h5>Upload Image Here!!</h5>
+      <form onSubmit={handleSubmit} >
+      <input type = "file" 
+      className = "img_upload_button"
+      accept="image/*" 
+      onChange={handleImageChange}
+      />
+      <input type = "submit"/>
+      </form>
+      <ImageResult imgSrc = {imgState} session={session}/> 
+      </>   
+    )}
+      
     </>
   )
 }
