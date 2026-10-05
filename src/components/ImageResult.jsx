@@ -125,4 +125,20 @@ function ImageResult({imgSrc, session}){
         )
     }
 }
+
+function calIOU(box1, box2){ 
+  //A เทียบ max ของ min 2ตัว B เทียบ min ของ max 2 ตัว
+  const xA = Math.max(box1.x_min, box2.x_min);
+  const yA = Math.max(box1.y_min, box2.y_min);
+  const xB = Math.min(box1.x_max, box2.x_max);
+  const yB = Math.min(box1.y_max, box2.y_max);
+
+  const intersect = Math.max(0, xB - xA) * Math.max(0, yB - yA);
+  //union = areabox1 + areabox2 - intersect;
+  const areaBox1 = (box1.x_max - box1.x_min) * (box1.y_max - box1.y_min);
+  const areaBox2 = (box2.x_max - box2.x_min) * (box2.y_max - box2.y_min);
+  const union = areaBox1 + areaBox2 - intersect;
+  const iou = intersect / union;
+  return iou;
+}
 export default ImageResult
