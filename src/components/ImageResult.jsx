@@ -57,6 +57,8 @@ function ImageResult({imgSrc, session}){
       const dims = results[outputName].dims; 
       const num_classes = dims[1] - 4; 
       const num_boxes = dims[2];
+      
+      let rawDetections = [];
 
       for (let i = 0; i < num_boxes; i++) {
         let max_prob = 0;
@@ -80,11 +82,31 @@ function ImageResult({imgSrc, session}){
             let y_min = (cy - h / 2) * scaleY;
             let box_w = w * scaleX;
             let box_h = h * scaleY;
+            
+            rawDetections.push({
+                x_min: x_min,
+                y_min: y_min,
+                x_max: x_min + box_w,
+                y_max: y_min + box_h,
+                w: box_w,
+                h: box_h,
+                prob: max_prob,
+                class_id: class_id
+            });
 
-            displayCtx.strokeRect(x_min, y_min, box_w, box_h);
-            displayCtx.fillText(`Class ${class_id} (${(max_prob * 100).toFixed(1)}%)`, x_min, y_min - 5);
+
+            //displayCtx.strokeRect(x_min, y_min, box_w, box_h);
+            //displayCtx.fillText(`Class ${class_id} (${(max_prob * 100).toFixed(1)}%)`, x_min, y_min - 5);
         }
+
+        
     }
+    const finalDetections = nms(rawDetections, 0.45);
+
+      finalDetections.forEach(det => {
+          displayCtx.strokeRect(det.x_min, det.y_min, det.w, det.h);
+          displayCtx.fillText(`Class ${det.class_id} (${(det.prob * 100).toFixed(1)}%)`, det.x_min, det.y_min - 5);
+      });
     }catch(error){
         console.error(error);
     }
@@ -127,7 +149,6 @@ function ImageResult({imgSrc, session}){
 }
 
 function calIOU(box1, box2){ 
-  //A เทียบ max ของ min 2ตัว B เทียบ min ของ max 2 ตัว
   const xA = Math.max(box1.x_min, box2.x_min);
   const yA = Math.max(box1.y_min, box2.y_min);
   const xB = Math.min(box1.x_max, box2.x_max);
@@ -141,4 +162,24 @@ function calIOU(box1, box2){
   const iou = intersect / union;
   return iou;
 }
+
+function nms(boxes, iouThreshold = 0.45) {
+  boxes.sort((a, b) => b.prob - a.prob); 
+  const selectedBoxes = [];
+
+  while (boxes.length > 0) {
+    const currentBox = boxes.shift(); 
+    selectedBoxes.push(currentBox); 
+
+    boxes = boxes.filter((box) => {
+      if (box.class_id === currentBox.class_id) {
+        const iou = calIOU(currentBox, box);
+        return iou < iouThreshold; 
+      }
+      return true;
+    });
+  }
+  return selectedBoxes;
+}
+
 export default ImageResult
