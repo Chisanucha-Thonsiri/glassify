@@ -1,6 +1,6 @@
 function DetectionFrame({det}){
 return (
-        <div 
+        <div onClick = {() => alertRes(det)}
             style={{
                 position: 'absolute',
                 left: `${det.x_min}px`,
@@ -25,5 +25,24 @@ return (
             </span>
         </div>
     );
+}
+function alertRes(det){
+    const classId = det.class_id;
+    //console.log(classId);
+    let className;
+    if(classId == 0){
+        className = "Beaker";
+    }else if(classId == 1){
+        className = "Erlenmeyer Flask";
+    }else if(classId == 2){
+        className = "Test Tube";
+    }else if(classId == 3){
+        className = "Measuring Cylinder";
+    }else if(classId == 4){
+        className = "Volumetric Flask";
+    }else{
+        className = "Not found!"
+    }
+    alert(className);
 }
 export default DetectionFrame;
