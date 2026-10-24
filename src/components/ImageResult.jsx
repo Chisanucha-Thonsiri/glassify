@@ -23,7 +23,19 @@ function ImageResult({imgSrc, session}){
     aiCanvas.height = 640;
     const aiCtx = aiCanvas.getContext("2d");
     //ctx.drawImage(image, 0, 0, 640, 640);
-    aiCtx.drawImage(image, 0, 0, 640, 640);
+    //aiCtx.drawImage(image, 0, 0, 640, 640);
+    //--- Implement new pre processing -> Letter Boxing
+    const targetSize = 640;
+    const scale = Math.min(targetSize / image.width, targetSize / image.height);
+    const newW = image.width * scale;
+    const newH = image.height * scale;
+    const padX = (targetSize - newW) / 2;
+    const padY = (targetSize - newH) / 2;
+    aiCtx.fillStyle = "black";
+    aiCtx.fillRect(0, 0, targetSize, targetSize);
+    aiCtx.drawImage(image, padX, padY, newW, newH);
+
+
 
     //Note: This section is for normalization (Reminder: Attention needed) <!>
 
@@ -78,10 +90,15 @@ function ImageResult({imgSrc, session}){
             let w = output[2 * num_boxes + i];
             let h = output[3 * num_boxes + i];
 
-            let x_min = (cx - w / 2) * scaleX;
-            let y_min = (cy - h / 2) * scaleY;
-            let box_w = w * scaleX;
-            let box_h = h * scaleY;
+            //let x_min = (cx - w / 2) * scaleX;
+            //let y_min = (cy - h / 2) * scaleY;
+            //let box_w = w * scaleX;
+            //let box_h = h * scaleY;
+            //--new pre processing (Letter boxing)
+            let x_min = ((cx - w / 2) - padX) / scale;
+            let y_min = ((cy - h / 2) - padY) / scale;
+            let box_w = w / scale;
+            let box_h = h / scale;
             
             rawDetections.push({
                 x_min: x_min,
