@@ -1,21 +1,23 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import * as ort from 'onnxruntime-web';
+import DetectionFrame from './DetectionFrame.jsx';
 
 function ImageResult({imgSrc, session}){
 
     const imageRef = useRef(null);
     const canvasRef = useRef(null);
+    const [detResult, setDetResult] = useState([]);
 
     const processImage = async () => {
     if (!imageRef.current || !session) return;
 
     const image = imageRef.current;
-    const canvas = canvasRef.current;
+    /*const canvas = canvasRef.current;
 
     //const ctx = canvas.getContext("2d");
     //Note: This is canvas for og size image
     canvas.width = image.width;
-    canvas.height = image.height;
+    canvas.height = image.height;*/
     
     //Note: This id canvas for 640 * 640 but invisible. Used to feed into model
     const aiCanvas = document.createElement('canvas');
@@ -56,12 +58,12 @@ function ImageResult({imgSrc, session}){
         const outputName = session.outputNames[0];
         const output = results[outputName].data;
         //console.log("feed success");
-        const displayCtx = canvas.getContext('2d');
+       /* const displayCtx = canvas.getContext('2d');
       displayCtx.clearRect(0, 0, canvas.width, canvas.height); 
       displayCtx.strokeStyle = "#00FF00"; 
       displayCtx.lineWidth = 3;
       displayCtx.font = "18px Arial";
-      displayCtx.fillStyle = "#00FF00";
+      displayCtx.fillStyle = "#00FF00";*/
 
       const scaleX = image.width / 640;
       const scaleY = image.height / 640;
@@ -119,11 +121,12 @@ function ImageResult({imgSrc, session}){
         
     }
     const finalDetections = nms(rawDetections, 0.45);
-
-      finalDetections.forEach(det => {
+    setDetResult(finalDetections);
+     //Old Canvas Method (for emergency)
+    /*finalDetections.forEach(det => {
           displayCtx.strokeRect(det.x_min, det.y_min, det.w, det.h);
           displayCtx.fillText(`Class ${det.class_id} (${(det.prob * 100).toFixed(1)}%)`, det.x_min, det.y_min - 5);
-      });
+      });*/
     }catch(error){
         console.error(error);
     }
@@ -149,14 +152,18 @@ function ImageResult({imgSrc, session}){
             onLoad={processImage}
           />
           
-          <canvas 
+          {/*<canvas 
             ref={canvasRef} 
             style={{ 
               position: 'absolute', 
               top: 0, 
               left: 0 
             }} 
-          />
+          /> */}
+
+        {detResult.map((det, index) => 
+        (<DetectionFrame key={index} det={det} 
+            />))}
           
         </div>
             </div>
