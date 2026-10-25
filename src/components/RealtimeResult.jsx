@@ -7,6 +7,7 @@ function RealtimeResult({session}){
     const realtimeRef = useRef(null);
     //const canvasRef = useRef(null);
     const [detResult, setDetResult] = useState([]);
+    const inProcess = useRef(false);
 
     useEffect(() => {
         const startWebcam = async () => {
@@ -27,15 +28,11 @@ function RealtimeResult({session}){
     }, []);
 
     const processImage = async () => {
-    if (!imageRef.current || !session) return;
+    if (!realtimeRef.current || !session || inProcess.current) return;
 
-    const image = imageRef.current;
-    /*const canvas = canvasRef.current;
-
-    //const ctx = canvas.getContext("2d");
-    //Note: This is canvas for og size image
-    canvas.width = image.width;
-    canvas.height = image.height;*/
+    const image = realtimeRef.current;
+    inProcess.current = true;
+    try{
     
     //Note: This id canvas for 640 * 640 but invisible. Used to feed into model
     const aiCanvas = document.createElement('canvas');
@@ -46,9 +43,9 @@ function RealtimeResult({session}){
     //aiCtx.drawImage(image, 0, 0, 640, 640);
     //--- Implement new pre processing -> Letter Boxing
     const targetSize = 640;
-    const scale = Math.min(targetSize / image.width, targetSize / image.height);
-    const newW = image.width * scale;
-    const newH = image.height * scale;
+    const scale = Math.min(targetSize / image.videoWidth, targetSize / image.videoHeight);
+    const newW = image.videoWidth * scale;
+    const newH = image.videoHeight * scale;
     const padX = (targetSize - newW) / 2;
     const padY = (targetSize - newH) / 2;
     aiCtx.fillStyle = "black";
@@ -70,21 +67,12 @@ function RealtimeResult({session}){
 
     const tensor = new ort.Tensor('float32', float32Data, [1, 3, 640, 640]);
     
-    try{
+    
         const feeds = {images: tensor}; //Note: YoloV8 รับข้อมูลผ่าน images เราจึงแปะ tensor เข้าไป
         const results = await session.run(feeds);
         const outputName = session.outputNames[0];
         const output = results[outputName].data;
-        //console.log("feed success");
-       /* const displayCtx = canvas.getContext('2d');
-      displayCtx.clearRect(0, 0, canvas.width, canvas.height); 
-      displayCtx.strokeStyle = "#00FF00"; 
-      displayCtx.lineWidth = 3;
-      displayCtx.font = "18px Arial";
-      displayCtx.fillStyle = "#00FF00";*/
 
-      const scaleX = image.width / 640;
-      const scaleY = image.height / 640;
 
       const dims = results[outputName].dims; 
       const num_classes = dims[1] - 4; 
@@ -109,12 +97,6 @@ function RealtimeResult({session}){
             let cy = output[1 * num_boxes + i];
             let w = output[2 * num_boxes + i];
             let h = output[3 * num_boxes + i];
-
-            //let x_min = (cx - w / 2) * scaleX;
-            //let y_min = (cy - h / 2) * scaleY;
-            //let box_w = w * scaleX;
-            //let box_h = h * scaleY;
-            //--new pre processing (Letter boxing)
             let x_min = ((cx - w / 2) - padX) / scale;
             let y_min = ((cy - h / 2) - padY) / scale;
             let box_w = w / scale;
@@ -147,6 +129,9 @@ function RealtimeResult({session}){
       });*/
     }catch(error){
         console.error(error);
+    }finally{
+      inProcess.current = false;
+      requestAnimationFrame(processImage);
     }
     
   };
@@ -158,7 +143,8 @@ function RealtimeResult({session}){
             <div style={{ position: 'relative', display: 'inline-block' }}>
           
           <video 
-                    ref={realtimeRef} 
+                    ref={realtimeRef}
+                    onLoadedData={processImage} 
                     autoPlay 
                     playsInline 
                     muted 
