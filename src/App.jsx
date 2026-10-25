@@ -1,5 +1,6 @@
 import { useState,useEffect } from 'react'
 import ImageResult from './components/ImageResult.jsx'
+import RealtimeResult from './components/RealtimeResult.jsx';
 import './App.css'
 import * as ort from 'onnxruntime-web';
 
@@ -51,7 +52,8 @@ function App() {
       />
       <input type = "submit"/>
       </form>
-      <ImageResult imgSrc = {imgState} session={session}/> 
+      {/*<ImageResult imgSrc = {imgState} session={session}/> */}
+      <RealtimeResult session={session}/>
       </>   
     )}
       
