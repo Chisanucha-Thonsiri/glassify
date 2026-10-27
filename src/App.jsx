@@ -8,6 +8,7 @@ function App() {
   const [imgState, setImageState] = useState(null)
   const [session, setSession] = useState(null);
   const [isModelLoading, setIsModelLoading] = useState(true);
+  const [mode, setMode] = useState(0);
 
   useEffect( () => {
     const loadModel = async() => {
@@ -51,9 +52,18 @@ function App() {
       onChange={handleImageChange}
       />
       <input type = "submit"/>
+      {mode == 0?
+      <button onClick={() => setMode(1)}>Real-Time Detetcion Mode</button>
+      :
+      <button onClick={() => setMode(0)}>Image Upload Mode</button>}
       </form>
+      <>
+      {mode == 0?
+      <ImageResult imgSrc = {imgState} session={session}/>
+      :
+      <RealtimeResult session={session}/>}
       {/*<ImageResult imgSrc = {imgState} session={session}/> */}
-      <RealtimeResult session={session}/>
+      </>
       </>   
     )}
       
