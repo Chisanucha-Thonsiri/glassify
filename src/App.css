@@ -154,6 +154,24 @@ body, html {
   align-self: flex-start; 
   margin-top: 10px;
 }
+.magnify_glass {
+  /*animation: glow-anim 2s infinite ease-in-out;*/
+  filter: drop-shadow(0 0 2px #ffffff) 
+          drop-shadow(0 0 8px #ffffff) 
+          drop-shadow(0 0 15px #ffffff);
+}
+
+@keyframes glow-anim {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1)); 
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+  }
+}
 
 @media (max-width: 480px) {
   .card-container {

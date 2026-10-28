@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import '../App.css'
 function DetectionFrame({det, drawModeFrame}){
     
     const centerX = det.x_min + (det.w / 2);
@@ -37,10 +38,10 @@ return <>{drawModeFrame ? (
                         top: `${centerY}px`,
                         transform: 'translate(-50%, -50%)', 
                         cursor: 'pointer',
-                        color: '#00FF00'
+                        color: '#0096B8'
                     }}
                 >
-                    <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" />
+                    <FontAwesomeIcon className = "magnify_glass" icon={faMagnifyingGlass} size="lg" bounce />
                 </div> 
     )}
 </>
