@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import ImageResult from './components/ImageResult.jsx'
 import RealtimeResult from './components/RealtimeResult.jsx';
+import SettingMenu from './components/SettingMenu.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faObjectGroup, faMagnifyingGlass, faStopwatch, faGear } from '@fortawesome/free-solid-svg-icons';
 import './App.css'
@@ -76,22 +77,7 @@ function App() {
             )}
           </form>
         </div>
-        <div className = "side-menu">
-        <div className = "nav-bar">
-          <div className="setting-header">
-          <FontAwesomeIcon icon={faGear} spin />
-          </div>
-            <div className = "nav-btn-1">
-              <FontAwesomeIcon icon={faObjectGroup}/>
-            </div>
-            <div className = "nav-btn-2">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </div>
-            <div className = "nav-btn-3">
-              <FontAwesomeIcon icon={faStopwatch} />
-            </div>
-        </div>
-        </div>
+        <SettingMenu/>
         </>
       )}
     </div>
