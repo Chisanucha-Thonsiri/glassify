@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import '../App.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGear, faObjectGroup, faMagnifyingGlass, faStopwatch } from '@fortawesome/free-solid-svg-icons';
-function SettingMenu(){
+function SettingMenu({setDrawModeFrame}){
     const [isDetectionFrame, setIsDetectionFrame] = useState(true);
     const [isTimer, setIsTimer] = useState(false);
 
@@ -17,13 +17,13 @@ function SettingMenu(){
             <div className = "nav-btn-1" style = {{border: "2px solid white", boxShadow: "0 0 8px white" }} >
               <FontAwesomeIcon icon={faObjectGroup}/>
             </div>
-            <div className = "nav-btn-2" onClick = {() => {setIsDetectionFrame(false)}}>
+            <div className = "nav-btn-2" onClick = {() => {setIsDetectionFrame(false); setDrawModeFrame(false);}}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </div>
             </>
           ):(
             <>
-            <div className = "nav-btn-1" onClick = {() => {setIsDetectionFrame(true)}}>
+            <div className = "nav-btn-1" onClick = {() => {setIsDetectionFrame(true); setDrawModeFrame(true);}}>
               <FontAwesomeIcon icon={faObjectGroup}/>
             </div>
             <div className = "nav-btn-2" style = {{border: "2px solid white", boxShadow: "0 0 8px white" }}>

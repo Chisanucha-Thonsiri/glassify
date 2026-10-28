@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import ImageResult from './components/ImageResult.jsx'
 import RealtimeResult from './components/RealtimeResult.jsx';
 import SettingMenu from './components/SettingMenu.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faObjectGroup, faMagnifyingGlass, faStopwatch, faGear } from '@fortawesome/free-solid-svg-icons';
 import './App.css'
 import * as ort from 'onnxruntime-web';
 
@@ -12,6 +10,7 @@ function App() {
   const [session, setSession] = useState(null);
   const [isModelLoading, setIsModelLoading] = useState(true);
   const [mode, setMode] = useState(0);
+  const [drawModeFrame, setDrawModeFrame] = useState(true);
 
   useEffect(() => {
     const loadModel = async () => {
@@ -51,9 +50,9 @@ function App() {
 
           <div className="preview-section">
             {mode == 0 ? (
-              <ImageResult imgSrc={imgState} session={session} />
+              <ImageResult imgSrc={imgState} session={session} drawModeFrame={drawModeFrame} />
             ) : (
-              <RealtimeResult session={session} />
+              <RealtimeResult session={session} drawModeFrame={drawModeFrame}/>
             )}
           </div>
 
@@ -77,11 +76,10 @@ function App() {
             )}
           </form>
         </div>
-        <SettingMenu/>
+        <SettingMenu setDrawModeFrame={setDrawModeFrame}/>
         </>
       )}
     </div>
 )
 }
-
 export default App

@@ -1,5 +1,10 @@
-function DetectionFrame({det}){
-return (
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+function DetectionFrame({det, drawModeFrame}){
+    
+    const centerX = det.x_min + (det.w / 2);
+    const centerY = det.y_min + (det.h / 2);
+return <>{drawModeFrame ? (
         <div onClick = {() => alertRes(det)}
             style={{
                 position: 'absolute',
@@ -24,7 +29,21 @@ return (
                 Class {det.class_id}
             </span>
         </div>
-    );
+    ):(
+       <div onClick={() => alertRes(det)}
+                    style={{
+                        position: 'absolute',
+                        left: `${centerX}px`,
+                        top: `${centerY}px`,
+                        transform: 'translate(-50%, -50%)', 
+                        cursor: 'pointer',
+                        color: '#00FF00'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" />
+                </div> 
+    )}
+</>
 }
 function alertRes(det){
     const classId = det.class_id;

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
 
-function ImageResult({imgSrc, session}){
+function ImageResult({imgSrc, session, drawModeFrame}){
 
     const imageRef = useRef(null);
     const canvasRef = useRef(null);
@@ -162,7 +162,7 @@ function ImageResult({imgSrc, session}){
           /> */}
 
         {detResult.map((det, index) => 
-        (<DetectionFrame key={index} det={det} 
+        (<DetectionFrame key={index} det={det} drawModeFrame={drawModeFrame}
             />))}
           
         </div>
