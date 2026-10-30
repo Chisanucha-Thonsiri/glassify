@@ -43,6 +43,7 @@ body, html {
   max-width: 720px; 
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   text-align: center;
+  align-self: flex-start;
 }
 
 .title-text {
@@ -63,6 +64,16 @@ body, html {
   align-items: center;
   overflow: hidden;
   aspect-ratio: 4 / 3;
+}
+
+.result-container {
+  background-color: var(--bg-main);
+  border: 2px dashed var(--accent-yellow);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
+  display: inline-block; 
 }
 
 .controls-form {

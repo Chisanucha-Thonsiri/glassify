@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
+import '../App.css'
 
 function ImageResult({imgSrc, session, drawModeFrame}){
 
@@ -137,38 +138,40 @@ function ImageResult({imgSrc, session, drawModeFrame}){
         return null;
     }
     else{
-        return(
-            <>
+    return (
+        <>
             <div style={{ marginTop: '20px' }}>
-            <p>Preview:</p>
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-          
-          <img 
-            ref={imageRef} 
-            src={imgSrc} 
-            alt="Uploaded" 
-            width="300" 
-            style={{ display: 'block' }}
-            onLoad={processImage}
-          />
-          
-          {/*<canvas 
-            ref={canvasRef} 
-            style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0 
-            }} 
-          /> */}
+                <p>Preview:</p>
+                <div className="result-container">
+                    <img 
+                        ref={imageRef} 
+                        src={imgSrc} 
+                        alt="Uploaded" 
+                        width="300" 
+                        style={{ display: 'block' }}
+                        onLoad={processImage}
+                    />
+                    
+                    {/*<canvas 
+                        ref={canvasRef} 
+                        style={{ 
+                            position: 'absolute', 
+                            top: 0, 
+                            left: 0 
+                        }} 
+                    /> */}
 
-        {detResult.map((det, index) => 
-        (<DetectionFrame key={index} det={det} drawModeFrame={drawModeFrame}
-            />))}
-          
-        </div>
+                    {detResult.map((det, index) => (
+                        <DetectionFrame 
+                            key={index} 
+                            det={det} 
+                            drawModeFrame={drawModeFrame}
+                        />
+                    ))}
+                </div>
             </div>
-            </>
-        )
+        </>
+    );
     }
 }
 

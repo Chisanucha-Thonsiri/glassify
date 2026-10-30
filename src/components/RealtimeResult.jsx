@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
+import '../App.css'
 
 function RealtimeResult({session,drawModeFrame}){
 

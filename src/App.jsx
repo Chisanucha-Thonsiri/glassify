@@ -45,41 +45,50 @@ function App() {
         <h1 className="loading-text">Loading...</h1>
       ) : (
         <>
-        <div className="card-container">
-          <h5 className="title-text">Upload Image Here!!</h5>
-
-          <div className="preview-section">
-            {mode == 0 ? (
+          {mode == 0 ? (
+            <div className="card-container">
+              <h5 className="title-text">Upload Image Here!!</h5>
               <ImageResult imgSrc={imgState} session={session} drawModeFrame={drawModeFrame} />
-            ) : (
-              <RealtimeResult session={session} drawModeFrame={drawModeFrame}/>
-            )}
-          </div>
 
-          <form className="controls-form" onSubmit={handleSubmit}>
-            <input
-              type="file"
-              className="img_upload_button"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-            <input type="submit" className="submit-btn" />
-            
-            {mode == 0 ? (
-              <button type="button" className="mode-btn" onClick={() => setMode(1)}>
-                Real-Time Detection Mode
-              </button>
-            ) : (
-              <button type="button" className="mode-btn" onClick={() => setMode(0)}>
-                Image Upload Mode
-              </button>
-            )}
-          </form>
-        </div>
-        <SettingMenu setDrawModeFrame={setDrawModeFrame}/>
+              <form className="controls-form" onSubmit={handleSubmit}>
+                <input
+                  type="file"
+                  className="img_upload_button"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <input type="submit" className="submit-btn" />
+
+                <button type="button" className="mode-btn" onClick={() => setMode(1)}>
+                  Real-Time Detection Mode
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="card-container">
+              <h5 className="title-text">Real-Time Mode!!</h5>
+              <RealtimeResult session={session} drawModeFrame={drawModeFrame} />
+
+              <form className="controls-form" onSubmit={handleSubmit}>
+                <input
+                  type="file"
+                  className="img_upload_button"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <input type="submit" className="submit-btn" />
+
+                <button type="button" className="mode-btn" onClick={() => setMode(0)}>
+                  Image Upload Mode
+                </button>
+              </form>
+            </div>
+          )}
+          <SettingMenu setDrawModeFrame={setDrawModeFrame} />
         </>
       )}
     </div>
-)
+  )
 }
+
 export default App
