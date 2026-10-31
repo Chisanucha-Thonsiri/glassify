@@ -141,7 +141,6 @@ function ImageResult({imgSrc, session, drawModeFrame}){
     return (
         <>
             <div style={{ marginTop: '20px' }}>
-                <p>Preview:</p>
                 <div className="result-container">
                     <img 
                         ref={imageRef} 
