@@ -68,6 +68,7 @@ function alertRes(det,setOverlay){
     }else{
         className = "Not found!"
     }
-    setOverlay(className);
+    console.log(className);
+    setOverlay(classId);
 }
 export default DetectionFrame;

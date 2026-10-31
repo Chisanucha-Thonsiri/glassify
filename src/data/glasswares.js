@@ -65,3 +65,5 @@ const glasswares = {
         guideVideo: "https://lorenipsum"
     }
 }
+
+export default glasswares;
