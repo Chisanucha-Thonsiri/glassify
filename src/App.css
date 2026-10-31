@@ -205,6 +205,21 @@ body, html {
   box-shadow: 0 0 8px white;
 }
 
+.overlay {
+  position: fixed;
+  top: 10vh; 
+  bottom: 0;
+  left: 50vh;
+  right: 50vh; 
+  z-index: 9999; 
+  background-color: var(--bg-highlight); 
+  overflow-y: auto; 
+  padding: 20px; 
+  border-radius: 20px 20px 0 0;
+  border: 2px solid white;
+  box-shadow: 0 0 20px white;
+}
+
 @keyframes glow-anim {
   0% {
     filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
