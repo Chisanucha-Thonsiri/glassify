@@ -218,6 +218,7 @@ body, html {
   border-radius: 20px 20px 0 0;
   border: 2px solid white;
   box-shadow: 0 0 20px white;
+  animation: slideUpAnim 0.4s ease-out;
 }
 
 @keyframes glow-anim {
@@ -229,6 +230,17 @@ body, html {
   }
   100% {
     filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+  }
+}
+
+@keyframes slideUpAnim {
+  from {
+    transform: translateY(100%); 
+    opacity: 0; 
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1; 
   }
 }
 
