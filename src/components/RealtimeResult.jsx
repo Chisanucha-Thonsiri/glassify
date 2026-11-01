@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
+import InfoOverlay from './InfoOverlay.jsx';
 import '../App.css'
 
 function RealtimeResult({session,drawModeFrame}){
@@ -9,6 +10,24 @@ function RealtimeResult({session,drawModeFrame}){
     //const canvasRef = useRef(null);
     const [detResult, setDetResult] = useState([]);
     const inProcess = useRef(false);
+    const [activeOverlay, setActiveOverlay] = useState(null);
+    const isPaused = useRef(false);
+
+const handleOpenOverlay = (classId) => {
+        setActiveOverlay(classId);
+        isPaused.current = true; 
+        if (realtimeRef.current) {
+            realtimeRef.current.pause(); 
+        }
+    };
+
+    const handleCloseOverlay = () => {
+        setActiveOverlay(null);
+        isPaused.current = false; 
+        if (realtimeRef.current) {
+            realtimeRef.current.play(); 
+        }
+    };
 
     useEffect(() => {
         const startWebcam = async () => {
@@ -30,7 +49,10 @@ function RealtimeResult({session,drawModeFrame}){
 
     const processImage = async () => {
     if (!realtimeRef.current || !session || inProcess.current) return;
-
+    if (isPaused.current) {
+            requestAnimationFrame(processImage);
+            return;
+        }
     const image = realtimeRef.current;
     inProcess.current = true;
     try{
@@ -164,11 +186,17 @@ function RealtimeResult({session,drawModeFrame}){
           /> */}
 
         {detResult.map((det, index) => 
-        (<DetectionFrame key={index} det={det} drawModeFrame={drawModeFrame} 
+        (<DetectionFrame key={index} det={det} drawModeFrame={drawModeFrame} onOpenOverlay={() => handleOpenOverlay(det.class_id)}
             />))}
           
         </div>
             </div>
+        {activeOverlay !== null && (
+                <InfoOverlay 
+                    showOverlay={activeOverlay} 
+                    setOverlay={handleCloseOverlay} 
+                />
+            )}
             </>
         )
     }

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import ImageResult from './components/ImageResult.jsx'
 import RealtimeResult from './components/RealtimeResult.jsx';
 import SettingMenu from './components/SettingMenu.jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage, faVideo } from '@fortawesome/free-solid-svg-icons';
 import './App.css'
 import * as ort from 'onnxruntime-web';
 
@@ -16,7 +18,7 @@ function App() {
     const loadModel = async () => {
       try {
         const modelSession = await ort.InferenceSession.create("/model/glassify_V2.onnx");
-        //executionProviders: ['webgl', 'wasm'] -> for GPU
+        //executionProviders: ['webgl', 'wasm'] -> for GPU (To be implemented)
         setSession(modelSession);
         setIsModelLoading(false);
         console.log("Model Loaded Successfully");
@@ -35,9 +37,7 @@ function App() {
     }
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-  }
+
 
   return (
     <div className="app-layout">
@@ -46,42 +46,53 @@ function App() {
       ) : (
         <>
           {mode == 0 ? (
-            <div className="card-container">
-              <h5 className="title-text">Upload Image Here!!</h5>
+            <div className="card-container card-image">
+              <div className="mode-toggle">
+                  <div 
+                    className={`toggle-option ${mode === 0 ? 'active' : ''}`} 
+                    onClick={() => setMode(0)}
+                  >
+                    <FontAwesomeIcon icon={faImage} style={{ marginRight: '5px' }} />
+                    Image Upload
+                  </div>
+                  <div 
+                    className={`toggle-option ${mode === 1 ? 'active' : ''}`} 
+                    onClick={() => setMode(1)}
+                  >
+                    <FontAwesomeIcon icon={faVideo} style={{ marginRight: '5px' }} />
+                    Real-Time
+                  </div>
+                </div>
               <ImageResult imgSrc={imgState} session={session} drawModeFrame={drawModeFrame} />
 
-              <form className="controls-form" onSubmit={handleSubmit}>
+              <form className="controls-form">
                 <input
                   type="file"
                   className="img_upload_button"
                   accept="image/*"
                   onChange={handleImageChange}
                 />
-                <input type="submit" className="submit-btn" />
-
-                <button type="button" className="mode-btn" onClick={() => setMode(1)}>
-                  Real-Time Detection Mode
-                </button>
               </form>
             </div>
           ) : (
             <div className="card-container">
-              <h5 className="title-text">Real-Time Mode!!</h5>
+              <div className="mode-toggle">
+                  <div 
+                    className={`toggle-option ${mode === 0 ? 'active' : ''}`} 
+                    onClick={() => setMode(0)}
+                  >
+                    <FontAwesomeIcon icon={faImage} style={{ marginRight: '5px' }} />
+                    Image Upload
+                  </div>
+                  <div 
+                    className={`toggle-option ${mode === 1 ? 'active' : ''}`} 
+                    onClick={() => setMode(1)}
+                  >
+                    <FontAwesomeIcon icon={faVideo} style={{ marginRight: '5px' }} />
+                    Real-Time
+                  </div>
+                </div>
               <RealtimeResult session={session} drawModeFrame={drawModeFrame} />
-
-              <form className="controls-form" onSubmit={handleSubmit}>
-                <input
-                  type="file"
-                  className="img_upload_button"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-                <input type="submit" className="submit-btn" />
-
-                <button type="button" className="mode-btn" onClick={() => setMode(0)}>
-                  Image Upload Mode
-                </button>
-              </form>
             </div>
           )}
           <SettingMenu setDrawModeFrame={setDrawModeFrame} />
