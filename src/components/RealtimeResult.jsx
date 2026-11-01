@@ -13,14 +13,20 @@ function RealtimeResult({session,drawModeFrame}){
     const [activeOverlay, setActiveOverlay] = useState(null);
     const isPaused = useRef(false);
 
-    const handleOpenOverlay = (classId) => {
+const handleOpenOverlay = (classId) => {
         setActiveOverlay(classId);
-        isPaused.current = true;
+        isPaused.current = true; 
+        if (realtimeRef.current) {
+            realtimeRef.current.pause(); 
+        }
     };
 
     const handleCloseOverlay = () => {
         setActiveOverlay(null);
         isPaused.current = false; 
+        if (realtimeRef.current) {
+            realtimeRef.current.play(); 
+        }
     };
 
     useEffect(() => {
