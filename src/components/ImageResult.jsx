@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
+import InfoOverlay from './InfoOverlay.jsx';
 import '../App.css'
 
 function ImageResult({imgSrc, session, drawModeFrame}){
@@ -8,6 +9,16 @@ function ImageResult({imgSrc, session, drawModeFrame}){
     const imageRef = useRef(null);
     const canvasRef = useRef(null);
     const [detResult, setDetResult] = useState([]);
+
+    const [activeOverlay, setActiveOverlay] = useState(null);
+
+    const handleOpenOverlay = (classId) => {
+        setActiveOverlay(classId);
+    };
+
+    const handleCloseOverlay = () => {
+        setActiveOverlay(null);
+    };
 
     const processImage = async () => {
     if (!imageRef.current || !session) return;
@@ -164,11 +175,18 @@ function ImageResult({imgSrc, session, drawModeFrame}){
                         <DetectionFrame 
                             key={index} 
                             det={det} 
-                            drawModeFrame={drawModeFrame}
+                            drawModeFrame={drawModeFrame} 
+                            onOpenOverlay={() => handleOpenOverlay(det.class_id)}
                         />
                     ))}
                 </div>
             </div>
+            {activeOverlay !== null && (
+                <InfoOverlay 
+                    showOverlay={activeOverlay} 
+                    setOverlay={handleCloseOverlay} 
+                />
+            )}
         </>
     );
     }

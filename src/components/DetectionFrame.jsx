@@ -3,13 +3,13 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import InfoOverlay from './InfoOverlay.jsx';
 import { useRef, useState } from 'react';
 import '../App.css'
-function DetectionFrame({det, drawModeFrame}){
+function DetectionFrame({det, drawModeFrame, onOpenOverlay}){
     const [showOverlay, setOverlay] = useState(null);
     
     const centerX = det.x_min + (det.w / 2);
     const centerY = det.y_min + (det.h / 2);
 return <>{drawModeFrame ? (
-        <div onClick = {() => alertRes(det, setOverlay)}
+        <div onClick={onOpenOverlay}
             style={{
                 position: 'absolute',
                 left: `${det.x_min}px`,
@@ -34,7 +34,7 @@ return <>{drawModeFrame ? (
             </span>
         </div>
     ):(
-       <div onClick={() => alertRes(det,setOverlay)}
+       <div onClick={onOpenOverlay}
                     style={{
                         position: 'absolute',
                         left: `${centerX}px`,
@@ -47,8 +47,8 @@ return <>{drawModeFrame ? (
                     <FontAwesomeIcon className = "magnify_glass" icon={faMagnifyingGlass} size="lg" bounce />
                 </div> 
     )}
-    {showOverlay == null ? <></> : 
-    <InfoOverlay showOverlay = {showOverlay} setOverlay={setOverlay} />}
+    {/*{showOverlay == null ? <></> : 
+    <InfoOverlay showOverlay = {showOverlay} setOverlay={setOverlay} />}*/}
 </>
 }
 function alertRes(det,setOverlay){
