@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     const loadModel = async () => {
       try {
-        const modelSession = await ort.InferenceSession.create("/model/glassify_V2.onnx");
+        const modelSession = await ort.InferenceSession.create("/model/glassify_V4.onnx");
         //executionProviders: ['webgl', 'wasm'] -> for GPU (To be implemented)
         setSession(modelSession);
         setIsModelLoading(false);
