@@ -12,6 +12,7 @@ function RealtimeResult({session,drawModeFrame}){
     const inProcess = useRef(false);
     const [activeOverlay, setActiveOverlay] = useState(null);
     const isPaused = useRef(false);
+    const [facingMode, setFacingMode] = useState("environment");
 
 const handleOpenOverlay = (classId) => {
         setActiveOverlay(classId);
@@ -21,7 +22,7 @@ const handleOpenOverlay = (classId) => {
         }
     };
 
-    const handleCloseOverlay = () => {
+const handleCloseOverlay = () => {
         setActiveOverlay(null);
         isPaused.current = false; 
         if (realtimeRef.current) {
@@ -29,11 +30,24 @@ const handleOpenOverlay = (classId) => {
         }
     };
 
+const toggleCamera = () => {
+        setFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
+    };
+
     useEffect(() => {
+        let stream = null;
         const startWebcam = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 640, height: 480 } 
+                if (realtimeRef.current && realtimeRef.current.srcObject) {
+                    const tracks = realtimeRef.current.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());               
+                }
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 640, 
+                        height: 480,
+                        facingMode: facingMode 
+                    } 
                 });
                 if (realtimeRef.current) {
                     realtimeRef.current.srcObject = stream;
@@ -45,11 +59,22 @@ const handleOpenOverlay = (classId) => {
         };
 
         startWebcam();
-    }, []);
+
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    
+    }, [facingMode]);
 
     const processImage = async () => {
     if (!realtimeRef.current || !session || inProcess.current) return;
     if (isPaused.current) {
+            requestAnimationFrame(processImage);
+            return;
+        }
+    if (image.videoWidth === 0 || image.videoHeight === 0) { //<-Checking when switching camera mode
             requestAnimationFrame(processImage);
             return;
         }
@@ -162,6 +187,12 @@ const handleOpenOverlay = (classId) => {
         return(
             <>
             <div style={{ marginTop: '20px' }}>
+                <button 
+                onClick={toggleCamera}
+                className="cammode-btn"
+            >
+                Switch
+            </button>
             <p>Preview:</p>
             <div style={{ position: 'relative', display: 'inline-block' }}>
           

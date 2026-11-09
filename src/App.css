@@ -340,6 +340,16 @@ body, html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+.cammode-btn {
+  margin: 0 0 10px 0;
+  padding: 10px 15px;
+  background-color: var(--accent-yellow);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 
 @keyframes glow-anim {
   0% {
