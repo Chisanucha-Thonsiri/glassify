@@ -74,11 +74,11 @@ const toggleCamera = () => {
             requestAnimationFrame(processImage);
             return;
         }
+    const image = realtimeRef.current;
     if (image.videoWidth === 0 || image.videoHeight === 0) { //<-Checking when switching camera mode
             requestAnimationFrame(processImage);
             return;
         }
-    const image = realtimeRef.current;
     inProcess.current = true;
     try{
     
