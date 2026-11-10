@@ -75,7 +75,7 @@ const toggleCamera = () => {
             return;
         }
     const image = realtimeRef.current;
-    if (image.videoWidth === 0 || image.videoHeight === 0) { //<-Checking when switching camera mode
+    if (image.videoWidth === 0 || image.videoHeight === 0) { //<-Checking when switching camera mode (ประมาณว่าเปลี่ยนแล้ววิดีโอไม่โหลดทันที)
             requestAnimationFrame(processImage);
             return;
         }
@@ -145,11 +145,19 @@ const toggleCamera = () => {
             let cy = output[1 * num_boxes + i];
             let w = output[2 * num_boxes + i];
             let h = output[3 * num_boxes + i];
-            let x_min = ((cx - w / 2) - padX) / scale;
-            let y_min = ((cy - h / 2) - padY) / scale;
-            let box_w = w / scale;
-            let box_h = h / scale;
+            let x_minRaw = ((cx - w / 2) - padX) / scale;
+            let y_minRaw = ((cy - h / 2) - padY) / scale;
+            let box_wRaw = w / scale;
+            let box_hRaw = h / scale;
+
+            const displayRatioX = image.clientWidth / image.videoWidth;
+            const displayRatioY = image.clientHeight / image.videoHeight;
             
+            let x_min = x_minRaw * displayRatioX;
+            let y_min = y_minRaw * displayRatioY;
+            let box_w = box_wRaw * displayRatioX;
+            let box_h = box_hRaw * displayRatioY;
+
             rawDetections.push({
                 x_min: x_min,
                 y_min: y_min,
@@ -204,7 +212,7 @@ const toggleCamera = () => {
                     muted 
                     width="640" 
                     height="480"
-                    style={{ display: 'block', backgroundColor: '#333' }}
+                    style={{display: 'block', backgroundColor: '#333', width: '100%', maxWidth: '640px',height: 'auto'}}
                 />
           
           {/*<canvas 
