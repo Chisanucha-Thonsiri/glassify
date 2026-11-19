@@ -2,43 +2,42 @@ import { useRef, useState, useEffect } from 'react';
 import '../App.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGear, faObjectGroup, faMagnifyingGlass, faStopwatch } from '@fortawesome/free-solid-svg-icons';
-function SettingMenu({setDrawModeFrame}){
-    const [isDetectionFrame, setIsDetectionFrame] = useState(true);
+function SettingMenu({drawModeFrame, setDrawModeFrame}){
     const [isTimer, setIsTimer] = useState(false);
 
     return (
-        <div className = "side-menu">
+        <div className = "camera-hud-menu">
         <div className = "nav-bar">
           <div className="setting-header">
           <FontAwesomeIcon icon={faGear} spin />
           </div>
-          {isDetectionFrame ? (
+          {drawModeFrame ? (
             <>
-            <div className = "nav-btn-1" style = {{border: "2px solid white", boxShadow: "0 0 8px white" }} >
+            <div className = "nav-btn-1 active-hud" title="Bounding Box">
               <FontAwesomeIcon icon={faObjectGroup}/>
             </div>
-            <div className = "nav-btn-2" onClick = {() => {setIsDetectionFrame(false); setDrawModeFrame(false);}}>
+            <div className = "nav-btn-2" title="Magnify Icon" onClick = {() => {setDrawModeFrame(false);}}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </div>
             </>
           ):(
             <>
-            <div className = "nav-btn-1" onClick = {() => {setIsDetectionFrame(true); setDrawModeFrame(true);}}>
+            <div className = "nav-btn-1" title="Bounding Box" onClick = {() => {setDrawModeFrame(true);}}>
               <FontAwesomeIcon icon={faObjectGroup}/>
             </div>
-            <div className = "nav-btn-2" style = {{border: "2px solid white", boxShadow: "0 0 8px white" }}>
+            <div className = "nav-btn-2 active-hud" title="Magnify Icon">
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </div>
             </>
           )}
           {isTimer? (
-            <div className = "nav-btn-3" style = {{border: "2px solid white", boxShadow: "0 0 8px white" }} onClick = {() => {setIsTimer(false)}}>
+            <div className = "nav-btn-3 active-hud" title="Timer" onClick = {() => {setIsTimer(false)}}>
               <FontAwesomeIcon icon={faStopwatch} />
             </div>
           ) 
           :
           (
-            <div className = "nav-btn-3" onClick = {() => {setIsTimer(true)}}>
+            <div className = "nav-btn-3" title="Timer" onClick = {() => {setIsTimer(true)}}>
               <FontAwesomeIcon icon={faStopwatch} />
             </div>
           )

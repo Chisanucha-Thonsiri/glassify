@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
 import InfoOverlay from './InfoOverlay.jsx';
@@ -24,6 +24,7 @@ function ImageResult({imgSrc, session, drawModeFrame}){
     if (!imageRef.current || !session) return;
 
     const image = imageRef.current;
+    if (!image.naturalWidth || !image.naturalHeight) return;
     /*const canvas = canvasRef.current;
 
     //const ctx = canvas.getContext("2d");
@@ -40,9 +41,9 @@ function ImageResult({imgSrc, session, drawModeFrame}){
     //aiCtx.drawImage(image, 0, 0, 640, 640);
     //--- Implement new pre processing -> Letter Boxing
     const targetSize = 640;
-    const scale = Math.min(targetSize / image.width, targetSize / image.height);
-    const newW = image.width * scale;
-    const newH = image.height * scale;
+    const scale = Math.min(targetSize / image.naturalWidth, targetSize / image.naturalHeight);
+    const newW = image.naturalWidth * scale;
+    const newH = image.naturalHeight * scale;
     const padX = (targetSize - newW) / 2;
     const padY = (targetSize - newH) / 2;
     aiCtx.fillStyle = "black";
@@ -109,10 +110,19 @@ function ImageResult({imgSrc, session, drawModeFrame}){
             //let box_w = w * scaleX;
             //let box_h = h * scaleY;
             //--new pre processing (Letter boxing)
-            let x_min = ((cx - w / 2) - padX) / scale;
-            let y_min = ((cy - h / 2) - padY) / scale;
-            let box_w = w / scale;
-            let box_h = h / scale;
+            let x_minRaw = ((cx - w / 2) - padX) / scale;
+            let y_minRaw = ((cy - h / 2) - padY) / scale;
+            let box_wRaw = w / scale;
+            let box_hRaw = h / scale;
+
+            const rect = image.getBoundingClientRect();
+            const displayRatioX = rect.width / image.naturalWidth;
+            const displayRatioY = rect.height / image.naturalHeight;
+
+            let x_min = x_minRaw * displayRatioX;
+            let y_min = y_minRaw * displayRatioY;
+            let box_w = box_wRaw * displayRatioX;
+            let box_h = box_hRaw * displayRatioY;
             
             rawDetections.push({
                 x_min: x_min,
@@ -145,20 +155,28 @@ function ImageResult({imgSrc, session, drawModeFrame}){
     
   };
 
+    useEffect(() => {
+        if (!imageRef.current || !imgSrc) return;
+        const observer = new ResizeObserver(() => {
+            processImage();
+        });
+        observer.observe(imageRef.current);
+        return () => observer.disconnect();
+    }, [imgSrc, session]);
+
     if(!imgSrc){
         return null;
     }
     else{
     return (
         <>
-            <div style={{ marginTop: '20px' }}>
+            <div className="result-wrapper">
                 <div className="result-container">
                     <img 
                         ref={imageRef} 
                         src={imgSrc} 
                         alt="Uploaded" 
-                        width="300" 
-                        style={{ display: 'block' }}
+                        className="responsive-result-img"
                         onLoad={processImage}
                     />
                     

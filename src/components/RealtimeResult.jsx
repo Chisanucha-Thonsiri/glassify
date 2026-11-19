@@ -2,9 +2,12 @@ import { useRef, useState, useEffect } from 'react';
 import * as ort from 'onnxruntime-web';
 import DetectionFrame from './DetectionFrame.jsx';
 import InfoOverlay from './InfoOverlay.jsx';
+import SettingMenu from './SettingMenu.jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCameraRotate } from '@fortawesome/free-solid-svg-icons';
 import '../App.css'
 
-function RealtimeResult({session,drawModeFrame}){
+function RealtimeResult({session, drawModeFrame, setDrawModeFrame}){
 
     const realtimeRef = useRef(null);
     //const canvasRef = useRef(null);
@@ -194,41 +197,44 @@ const toggleCamera = () => {
 
         return(
             <>
-            <div style={{ marginTop: '20px' }}>
-                <button 
-                onClick={toggleCamera}
-                className="cammode-btn"
-            >
-                Switch
-            </button>
-            <p>Preview:</p>
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-          
-          <video 
-                    ref={realtimeRef}
-                    onLoadedData={processImage} 
-                    autoPlay 
-                    playsInline 
-                    muted 
-                    width="640" 
-                    height="480"
-                    style={{display: 'block', backgroundColor: '#333', width: '100%', maxWidth: '640px',height: 'auto'}}
-                />
-          
-          {/*<canvas 
-            ref={canvasRef} 
-            style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0 
-            }} 
-          /> */}
+            <div className="camera-stage">
+                <div className="camera-viewport">
+                    <SettingMenu drawModeFrame={drawModeFrame} setDrawModeFrame={setDrawModeFrame} />
+                    
+                    <button 
+                        onClick={toggleCamera}
+                        className="cammode-btn"
+                        title="สลับกล้อง"
+                    >
+                        <FontAwesomeIcon icon={faCameraRotate} size="lg" />
+                    </button>
 
-        {detResult.map((det, index) => 
-        (<DetectionFrame key={index} det={det} drawModeFrame={drawModeFrame} onOpenOverlay={() => handleOpenOverlay(det.class_id)}
-            />))}
+                    <video 
+                        ref={realtimeRef}
+                        onLoadedData={processImage} 
+                        autoPlay 
+                        playsInline 
+                        muted 
+                        className="responsive-video"
+                    />
           
-        </div>
+                    {/*<canvas 
+                        ref={canvasRef} 
+                        style={{ 
+                        position: 'absolute', 
+                        top: 0, 
+                        left: 0 
+                        }} 
+                    /> */}
+
+                    {detResult.map((det, index) => 
+                    (<DetectionFrame key={index} det={det} drawModeFrame={drawModeFrame} onOpenOverlay={() => handleOpenOverlay(det.class_id)}
+                        />))}
+
+                    <div className="camera-hint">
+                        แตะที่กรอบหรือแว่นขยายเพื่อดูข้อมูลเครื่องแก้ว
+                    </div>
+                </div>
             </div>
         {activeOverlay !== null && (
                 <InfoOverlay 

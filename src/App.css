@@ -5,28 +5,46 @@
   --accent-yellow: #00D2FF;   
   --accent-yellow-hover: #0096B8;
 }
+
+* {
+  box-sizing: border-box;
+}
+
 body, html {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-main);
+  background-color: #141724;
   color: var(--text-color);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
 }
 
 .app-layout {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding: 16px;
+}
+
+.app-frame {
+  width: 100%;
+  max-width: 560px;
+  min-height: calc(100vh - 32px);
+  background-color: var(--bg-main);
+  border: 2px solid rgba(0, 210, 255, 0.25);
+  border-radius: 28px;
   padding: 20px;
-  box-sizing: border-box;
-  gap: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .loading-text {
   color: var(--accent-yellow);
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   animation: pulse 1.5s infinite ease-in-out;
 }
 
@@ -37,17 +55,19 @@ body, html {
 
 .card-container {
   background-color: var(--bg-highlight);
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: 20px;
+  padding: 16px;
   width: 100%;
-  max-width: 720px; 
+  flex: 1;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   text-align: center;
-  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card-image {
-  min-height: 80vh;
+  min-height: auto;
 }
 
 .title-text {
@@ -57,54 +77,91 @@ body, html {
   color: var(--text-color);
 }
 
-.preview-section {
+.viewport-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 360px;
+}
+
+.empty-preview-box {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
   background-color: var(--bg-main);
   border: 2px dashed var(--accent-yellow);
-  border-radius: 12px;
-  min-height: 250px;
-  margin-bottom: 20px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: background-color 0.2s, transform 0.2s;
+  padding: 20px;
+}
+
+.empty-preview-box:hover {
+  background-color: rgba(0, 210, 255, 0.08);
+}
+
+.result-wrapper {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
 }
 
 .result-container {
   background-color: var(--bg-main);
-  border: 2px dashed var(--accent-yellow);
-  border-radius: 12px;
-  margin-bottom: 20px;
+  border: 2px solid var(--accent-yellow);
+  border-radius: 16px;
   overflow: hidden;
   position: relative;
-  display: inline-block; 
+  display: inline-block;
+  width: 100%;
+}
+
+.responsive-result-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .controls-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .img_upload_button {
-  color: var(--text-color);
-  font-size: 0.9rem;
+  display: none;
 }
 
-.img_upload_button::file-selector-button {
-  background-color: var(--bg-main);
-  color: var(--text-color);
-  border: 1px solid var(--accent-yellow);
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-right: 10px;
-  transition: all 0.2s;
-}
-
-.img_upload_button::file-selector-button:hover {
+.custom-file-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--accent-yellow);
   color: var(--bg-highlight);
+  padding: 13px 20px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 210, 255, 0.3);
+}
+
+.custom-file-btn:hover {
+  background-color: var(--accent-yellow-hover);
+  color: #ffffff;
 }
 
 .submit-btn, .mode-btn {
@@ -128,47 +185,130 @@ body, html {
   transform: translateY(0);
 }
 
-.preview-section video,
-.preview-section canvas,
-.preview-section img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain; 
+/* Camera Style HUD & Video Viewport */
+.camera-stage {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.camera-viewport {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #0d0f17;
+  border: 2px solid rgba(0, 210, 255, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.responsive-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 360px;
+  max-height: 68vh;
+  object-fit: cover;
+  background-color: #1a1d2b;
+}
+
+.camera-hud-menu {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 20;
 }
 
 .nav-bar {
-  background-color: var(--bg-highlight);
-  padding: 20px 10px;
-  border-radius: 60px;
+  background-color: rgba(19, 21, 31, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 6px 10px;
+  border-radius: 999px;
   display: flex;
-  flex-direction: column;
-  gap:8px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .nav-btn-1, .nav-btn-2, .nav-btn-3 {
-  background-color: var(--accent-yellow);
-  color: var(--bg-main);
-  padding: 10px; 
-  width: 100%; 
-  box-sizing: border-box; 
-  border-radius: 60px;
+  background-color: rgba(0, 210, 255, 0.2);
+  color: var(--text-color);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   cursor: pointer;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
   transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.nav-btn-1.active-hud, .nav-btn-2.active-hud, .nav-btn-3.active-hud {
+  background-color: var(--accent-yellow);
+  color: var(--bg-highlight);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.8);
 }
 
 .setting-header {
-  text-align: center;
-  margin: 0 0 10px 0;
-}
-.side-menu {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-self: flex-start; 
-  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-yellow);
+  padding: 0 4px;
+  font-size: 0.95rem;
 }
+
+.cammode-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(19, 21, 31, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--accent-yellow);
+  border: 1px solid rgba(0, 210, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0;
+  padding: 0;
+}
+
+.cammode-btn:hover {
+  background-color: var(--accent-yellow);
+  color: var(--bg-highlight);
+  transform: scale(1.05);
+}
+
+.camera-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(19, 21, 31, 0.75);
+  backdrop-filter: blur(6px);
+  color: rgba(248, 249, 250, 0.9);
+  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .magnify_glass {
   /*animation: glow-anim 2s infinite ease-in-out;*/
   filter: drop-shadow(0 0 2px #ffffff) 
@@ -181,18 +321,20 @@ body, html {
   background-color: var(--bg-highlight); 
   border-radius: 30px;
   padding: 4px;
-  margin: 0 auto 20px auto;
-  width: 320px; 
+  margin: 0 auto 16px auto;
+  width: 100%;
+  max-width: 340px; 
   border: 1px solid var(--accent-yellow);
 }
 
 .toggle-option {
   flex: 1;
   text-align: center;
-  padding: 8px 0;
+  padding: 9px 0;
   cursor: pointer;
   border-radius: 26px;
   font-weight: bold;
+  font-size: 0.92rem;
   color: var(--text-color);
   transition: all 0.3s ease-in-out;
 }
@@ -200,7 +342,6 @@ body, html {
 .toggle-option.active {
   background-color: var(--accent-yellow);
   color: #1E2233; 
-  box-shadow: 0 0 10px var(--accent-yellow);
   border: 2px solid white;
   box-shadow: 0 0 8px white;
 }
@@ -212,7 +353,7 @@ body, html {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 600px;
+  max-width: 560px;
   z-index: 9999;
   background-color: var(--bg-highlight);
   overflow-y: auto;
@@ -220,7 +361,7 @@ body, html {
   border-radius: 24px 24px 0 0;
   border: 2px solid white;
   border-bottom: none;
-  box-shadow: 0 0 32px white;
+  box-shadow: 0 0 32px rgba(0, 210, 255, 0.35);
   animation: slideUpAnim 0.4s ease-out forwards;
   color: #ffffff;
   display: flex;
@@ -235,6 +376,7 @@ body, html {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 20px;
 }
+
 .overlay-header-text{
   display: flex;
   justify-content: center;
@@ -244,7 +386,7 @@ body, html {
 
 .overlay-header h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
 }
 
@@ -271,6 +413,7 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  text-align: left;
 }
 
 .type-badge {
@@ -330,26 +473,15 @@ body, html {
 
 .glassware-img {
   width: 100%;
-  max-width: 320px;
+  max-width: 280px;
   height: auto;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
-  margin: 0 auto 16px auto;
+  margin: 0 auto 12px auto;
   display: block;
   object-fit: cover;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-
-.cammode-btn {
-  margin: 0 0 10px 0;
-  padding: 10px 15px;
-  background-color: var(--accent-yellow);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 
 @keyframes glow-anim {
   0% {
@@ -374,13 +506,68 @@ body, html {
   }
 }
 
-
-@media (max-width: 480px) {
-  .card-container {
-    padding: 15px;
+/* iPad แนวตั้ง (Tablet Portrait) */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .app-frame {
+    max-width: 640px;
+    padding: 24px;
   }
-  
-  .preview-section {
-    min-height: 200px;
+
+  .responsive-video {
+    min-height: 460px;
+  }
+
+  .overlay {
+    max-width: 640px;
   }
 }
+
+/* โทรศัพท์มือถือ (Mobile) */
+@media (max-width: 599px) {
+  .app-layout {
+    padding: 0;
+    background-color: var(--bg-main);
+  }
+
+  .app-frame {
+    max-width: 100%;
+    min-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    padding: 14px 12px;
+    box-shadow: none;
+  }
+
+  .card-container {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .responsive-video {
+    min-height: 55dvh;
+    max-height: 68dvh;
+  }
+
+  .nav-btn-1, .nav-btn-2, .nav-btn-3 {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  .cammode-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .camera-hint {
+    font-size: 0.72rem;
+    padding: 5px 12px;
+  }
+
+  .overlay {
+    top: 8dvh;
+    max-width: 100%;
+    padding: 20px 16px;
+  }
+}
+
