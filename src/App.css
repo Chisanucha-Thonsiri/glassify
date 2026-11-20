@@ -265,6 +265,16 @@ body, html {
   font-size: 0.95rem;
 }
 
+.setting-closed{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-yellow);
+  padding: 0 4px;
+  font-size: 0.95rem;
+  margin: 9px 0 9px 0;
+}
+
 .cammode-btn {
   position: absolute;
   top: 12px;

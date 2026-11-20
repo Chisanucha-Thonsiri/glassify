@@ -16,6 +16,9 @@ function RealtimeResult({session, drawModeFrame, setDrawModeFrame}){
     const [activeOverlay, setActiveOverlay] = useState(null);
     const isPaused = useRef(false);
     const [facingMode, setFacingMode] = useState("environment");
+    const [fps, setFps] = useState(0);
+    const frameCount = useRef(0);
+    const lastFpsTime = useRef(performance.now());
 
 const handleOpenOverlay = (classId) => {
         setActiveOverlay(classId);
@@ -181,6 +184,16 @@ const toggleCamera = () => {
     }
     const finalDetections = nms(rawDetections, 0.45);
     setDetResult(finalDetections);
+
+    frameCount.current += 1;
+    const now = performance.now();
+    const elapsed = now - lastFpsTime.current;
+    if (elapsed >= 500) {
+        setFps(Math.round((frameCount.current * 1000) / elapsed));
+        frameCount.current = 0;
+        lastFpsTime.current = now;
+    }
+
      //Old Canvas Method (for emergency)
     /*finalDetections.forEach(det => {
           displayCtx.strokeRect(det.x_min, det.y_min, det.w, det.h);
@@ -208,6 +221,25 @@ const toggleCamera = () => {
                     >
                         <FontAwesomeIcon icon={faCameraRotate} size="lg" />
                     </button>
+
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '64px',
+                            right: '12px',
+                            zIndex: 20,
+                            backgroundColor: 'rgba(19, 21, 31, 0.78)',
+                            color: '#00FF00',
+                            padding: '4px 10px',
+                            borderRadius: '999px',
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold',
+                            border: '1px solid rgba(0, 255, 0, 0.45)',
+                            pointerEvents: 'none'
+                        }}
+                    >
+                        {fps} FPS
+                    </div>
 
                     <video 
                         ref={realtimeRef}
