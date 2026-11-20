@@ -198,6 +198,9 @@ function ImageResult({imgSrc, session, drawModeFrame}){
                         />
                     ))}
                 </div>
+                <div className="camera-hint">
+                        แตะที่กรอบหรือแว่นขยายเพื่อดูข้อมูลเครื่องแก้ว
+                    </div>
             </div>
             {activeOverlay !== null && (
                 <InfoOverlay 
