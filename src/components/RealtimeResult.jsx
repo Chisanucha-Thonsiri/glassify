@@ -146,7 +146,7 @@ const toggleCamera = () => {
             }
         }
 
-        if (max_prob > 0.5) {
+        if (max_prob > 0.563) {
             let cx = output[0 * num_boxes + i];
             let cy = output[1 * num_boxes + i];
             let w = output[2 * num_boxes + i];

@@ -66,9 +66,10 @@ function App() {
           {mode == 0 ? (
             <div className="card-container card-image">
               <div className="viewport-wrapper">
-                <SettingMenu drawModeFrame={drawModeFrame} setDrawModeFrame={setDrawModeFrame} />
                 {imgState ? (
-                  <ImageResult imgSrc={imgState} session={session} drawModeFrame={drawModeFrame} />
+                  <>
+                  <SettingMenu drawModeFrame={drawModeFrame} setDrawModeFrame={setDrawModeFrame} />
+                  <ImageResult imgSrc={imgState} session={session} drawModeFrame={drawModeFrame} /></>
                 ) : (
                   <label htmlFor="file-upload" className="empty-preview-box">
                     <FontAwesomeIcon icon={faCloudArrowUp} size="2x" style={{ color: 'var(--accent-yellow)', marginBottom: '10px' }} />
