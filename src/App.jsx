@@ -3,7 +3,7 @@ import ImageResult from './components/ImageResult.jsx'
 import RealtimeResult from './components/RealtimeResult.jsx';
 import SettingMenu from './components/SettingMenu.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage, faVideo, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faVideo, faCloudArrowUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import './App.css'
 import * as ort from 'onnxruntime-web';
 
@@ -43,7 +43,10 @@ function App() {
   return (
     <div className="app-layout">
       {isModelLoading ? (
+        <>
+        <FontAwesomeIcon className="loading-icon" icon={faSpinner} spin/>
         <h1 className="loading-text">Loading...</h1>
+        </>
       ) : (
         <div className="app-frame">
           <div className="mode-toggle">
